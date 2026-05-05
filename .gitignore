@@ -18,7 +18,7 @@ __pycache__/
 .vscode/
 
 # Data
-data/
+#data/
 #*.csv
 *.xlsx
 *.parquet
