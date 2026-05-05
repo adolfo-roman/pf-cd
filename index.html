@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandeja Privada Anti-Spam</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .bandeja { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 5px; }
+        .mensaje { background: #f9f9f9; padding: 10px; margin-bottom: 10px; border-left: 4px solid #4CAF50; }
+        .mensaje.spam { border-left-color: #f44336; }
+        textarea { width: 100%; height: 80px; margin-bottom: 10px; }
+        button { padding: 10px 15px; cursor: pointer; }
+        .btn-corregir { font-size: 0.8em; margin-top: 5px; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+</head>
+<body>
+
+    <h2>Analizador de Mensajes Privado</h2>
+    <p>La predicción ocurre 100% en tu computadora. Nada se envía al servidor a menos que reportes un error.</p>
+
+    <textarea id="inputMensaje" placeholder="Escribe un mensaje SMS aquí..."></textarea>
+    <button onclick="procesarMensaje()">Clasificar y Guardar</button>
+
+    <div style="background: #e9ecef; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <h3>Carga Masiva (CSV)</h3>
+        <p style="font-size: 0.9em; color: #555;">Sube un archivo .csv con un mensaje por línea. El procesamiento se hará localmente en tu computadora.</p>
+        <input type="file" id="archivoCSV" accept=".csv, .txt">
+        <button id="btnProcesarCSV" onclick="procesarCSV()">Subir y Analizar</button>
+    </div>
+
+    <div class="bandeja" id="inbox">
+        <h3>Bandeja de Entrada (Ham)</h3>
+        <div id="listaInbox"></div>
+    </div>
+
+    <div class="bandeja" id="spamBox">
+        <h3>Carpeta de Spam</h3>
+        <div id="listaSpam"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
