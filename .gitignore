@@ -19,7 +19,7 @@ __pycache__/
 
 # Data
 data/
-*.csv
+#*.csv
 *.xlsx
 *.parquet
 
