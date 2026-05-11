@@ -1,11 +1,1 @@
-{
-    "version": 1,
-    "fecha_actualizacion": "2026-04-28T05:08:26.046372+00:00",
-    "archivo_modelo": "modelo_produccion.onnx",
-    "algoritmo_ganador": "SVM",
-    "metricas_rendimiento": {
-        "falsos_positivos": 4,
-        "precision": 0.968503937007874,
-        "recall": 0.9389312977099237
-    }
-}
+{"version": 3}
