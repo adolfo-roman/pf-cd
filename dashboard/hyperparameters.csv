@@ -1,0 +1,21 @@
+run_id,model_name,date_trained,hp_C,hp_class_weight,hp_dual,hp_fit_intercept,hp_intercept_scaling,hp_l1_ratio,hp_max_iter,hp_n_jobs,hp_penalty,hp_random_state,hp_solver,hp_tol,hp_verbose,hp_warm_start,hp_alpha,hp_class_prior,hp_fit_prior,hp_force_alpha,hp_loss,hp_multi_class,hp_bootstrap,hp_ccp_alpha,hp_criterion,hp_max_depth,hp_max_features,hp_max_leaf_nodes,hp_max_samples,hp_min_impurity_decrease,hp_min_samples_leaf,hp_min_samples_split,hp_min_weight_fraction_leaf,hp_monotonic_cst,hp_n_estimators,hp_oob_score
+run_01_seed42,Logistic Regression,2026-05-13 01:12:05,1.0,balanced,False,True,1,0.0,1000,None,deprecated,42,lbfgs,0.0001,0,False,,,,,,,,,,,,,,,,,,,,
+run_01_seed42,Naive Bayes,2026-05-13 01:12:06,,,,,,,,,,,,,,,1.0,None,True,True,,,,,,,,,,,,,,,,
+run_01_seed42,Support Vector Machine,2026-05-13 01:12:07,1.0,balanced,auto,True,1,,1000,,l2,42,,0.0001,0,,,,,,squared_hinge,ovr,,,,,,,,,,,,,,
+run_01_seed42,Random Forest,2026-05-13 01:12:13,,balanced_subsample,,,,,,None,,42,,,0,False,,,,,,,True,0.0,gini,None,sqrt,None,None,0.0,1,2,0.0,None,100,False
+run_02_seed7,Logistic Regression,2026-05-13 01:12:14,1.0,balanced,False,True,1,0.0,1000,None,deprecated,42,lbfgs,0.0001,0,False,,,,,,,,,,,,,,,,,,,,
+run_02_seed7,Naive Bayes,2026-05-13 01:12:14,,,,,,,,,,,,,,,1.0,None,True,True,,,,,,,,,,,,,,,,
+run_02_seed7,Support Vector Machine,2026-05-13 01:12:15,1.0,balanced,auto,True,1,,1000,,l2,42,,0.0001,0,,,,,,squared_hinge,ovr,,,,,,,,,,,,,,
+run_02_seed7,Random Forest,2026-05-13 01:12:23,,balanced_subsample,,,,,,None,,42,,,0,False,,,,,,,True,0.0,gini,None,sqrt,None,None,0.0,1,2,0.0,None,100,False
+run_03_seed13,Logistic Regression,2026-05-13 01:12:24,1.0,balanced,False,True,1,0.0,1000,None,deprecated,42,lbfgs,0.0001,0,False,,,,,,,,,,,,,,,,,,,,
+run_03_seed13,Naive Bayes,2026-05-13 01:12:24,,,,,,,,,,,,,,,1.0,None,True,True,,,,,,,,,,,,,,,,
+run_03_seed13,Support Vector Machine,2026-05-13 01:12:25,1.0,balanced,auto,True,1,,1000,,l2,42,,0.0001,0,,,,,,squared_hinge,ovr,,,,,,,,,,,,,,
+run_03_seed13,Random Forest,2026-05-13 01:12:31,,balanced_subsample,,,,,,None,,42,,,0,False,,,,,,,True,0.0,gini,None,sqrt,None,None,0.0,1,2,0.0,None,100,False
+run_04_seed99,Logistic Regression,2026-05-13 01:12:32,1.0,balanced,False,True,1,0.0,1000,None,deprecated,42,lbfgs,0.0001,0,False,,,,,,,,,,,,,,,,,,,,
+run_04_seed99,Naive Bayes,2026-05-13 01:12:33,,,,,,,,,,,,,,,1.0,None,True,True,,,,,,,,,,,,,,,,
+run_04_seed99,Support Vector Machine,2026-05-13 01:12:33,1.0,balanced,auto,True,1,,1000,,l2,42,,0.0001,0,,,,,,squared_hinge,ovr,,,,,,,,,,,,,,
+run_04_seed99,Random Forest,2026-05-13 01:12:39,,balanced_subsample,,,,,,None,,42,,,0,False,,,,,,,True,0.0,gini,None,sqrt,None,None,0.0,1,2,0.0,None,100,False
+run_05_seed2024,Logistic Regression,2026-05-13 01:12:40,1.0,balanced,False,True,1,0.0,1000,None,deprecated,42,lbfgs,0.0001,0,False,,,,,,,,,,,,,,,,,,,,
+run_05_seed2024,Naive Bayes,2026-05-13 01:12:41,,,,,,,,,,,,,,,1.0,None,True,True,,,,,,,,,,,,,,,,
+run_05_seed2024,Support Vector Machine,2026-05-13 01:12:42,1.0,balanced,auto,True,1,,1000,,l2,42,,0.0001,0,,,,,,squared_hinge,ovr,,,,,,,,,,,,,,
+run_05_seed2024,Random Forest,2026-05-13 01:12:48,,balanced_subsample,,,,,,None,,42,,,0,False,,,,,,,True,0.0,gini,None,sqrt,None,None,0.0,1,2,0.0,None,100,False

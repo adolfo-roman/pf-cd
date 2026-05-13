@@ -1,0 +1,26 @@
+--- Model Evaluation Log ---
+
+Model: LogisticRegression
+Precision: 0.8563 | Recall: 0.9966
+Confusion Matrix:
+[[657  49]
+ [  1 292]]
+
+Model: NaiveBayes
+Precision: 0.9863 | Recall: 0.7372
+Confusion Matrix:
+[[703   3]
+ [ 77 216]]
+
+Model: SVM
+Precision: 0.9541 | Recall: 0.9932
+Confusion Matrix:
+[[692  14]
+ [  2 291]]
+
+Model: RandomForest
+Precision: 0.9241 | Recall: 0.9556
+Confusion Matrix:
+[[683  23]
+ [ 13 280]]
+
