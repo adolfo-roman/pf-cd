@@ -4,3 +4,7 @@ nltk
 scikit-learn
 skl2onnx
 onnxconverter-common
+psycopg2-binary
+python-dotenv
+joblib
+sqlalchemy
