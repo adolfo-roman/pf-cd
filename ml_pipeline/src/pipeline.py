@@ -1,7 +1,8 @@
 from fase_1_db import ejecutar_fase_1_db
-from fase_2 import ejecutar_fase_2
+from fase_2 import ejecutar_fase_2, separar_variables
 from fase_3 import ejecutar_fase_3
 from fase_4 import ejecutar_fase_4
+from fase_5 import ejecutar_fase_5
 
 
 def ejecutar_pipeline_completo():
@@ -29,6 +30,15 @@ def ejecutar_pipeline_completo():
         y_test,
     )
 
+    print("\nEjecutando Fase 5")
+    X_completo, y_completo = separar_variables(df_limpio)
+
+    resultados_fase_5 = ejecutar_fase_5(
+        X_completo,
+        y_completo,
+        preprocesador,
+    )
+
     print("\nPipeline completado correctamente.")
 
     return {
@@ -41,6 +51,7 @@ def ejecutar_pipeline_completo():
         "modelos_entrenados": modelos_entrenados,
         "mejor_modelo": mejor_modelo,
         "df_resultados": df_resultados,
+        "resultados_fase_5": resultados_fase_5,
     }
 
 
