@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}DataNova — Acerca{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Acerca de DataNova</h1>
+<p class="page-sub">Sistema de clasificación SMS · Ciencia de Datos · UNAM × Kyndryl · 2026</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;max-width:1100px">
+
+  <div class="card">
+    <div style="font-size:1.5rem;margin-bottom:.75rem">🎯</div>
+    <div class="card-title">El Problema</div>
+    <p style="color:var(--fg6);line-height:1.65;font-size:.9375rem">
+      México registra más de <strong style="color:var(--fg)">270,000 ciberataques por minuto</strong> y 6 millones de
+      fraudes cibernéticos anuales. El smishing explota la confianza en los SMS con tasa de apertura del 95%.
+    </p>
+  </div>
+
+  <div class="card">
+    <div style="font-size:1.5rem;margin-bottom:.75rem">🛡️</div>
+    <div class="card-title">La Solución</div>
+    <p style="color:var(--fg6);line-height:1.65;font-size:.9375rem">
+      Pipeline de ML con <strong style="color:var(--fg)">NLP + TF-IDF + SVM/Naive Bayes</strong> entrenado sobre
+      5,574 mensajes. Detecta spam en inglés y español con precisión superior al 98%.
+    </p>
+  </div>
+
+  <div class="card">
+    <div style="font-size:1.5rem;margin-bottom:.75rem">⚙️</div>
+    <div class="card-title">Pipeline NLP</div>
+    <ol style="list-style:none;display:flex;flex-direction:column;gap:.4rem;counter-reset:pl">
+      {% for step in ['Limpieza de ruido (regex)','Normalización a minúsculas','Tokenización','Eliminación de stop-words EN+ES','Stemming','Vectorización TF-IDF (3,000 features)','Clasificación SVM / Naive Bayes'] %}
+      <li style="display:flex;align-items:center;gap:.6rem;font-size:.875rem;color:var(--fg6)">
+        <span style="color:var(--eb);font-family:monospace;font-size:.75rem;min-width:20px">{{ '%02d'|format(loop.index) }}</span>
+        {{ step }}
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <div class="card">
+    <div style="font-size:1.5rem;margin-bottom:.75rem">👥</div>
+    <div class="card-title">Equipo</div>
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+      {% for role, desc in [('PM & MLOps','Orquestación y despliegue'),('Data Engineer','Preprocesamiento NLP'),('Data Analyst','EDA y visualizaciones'),('Data Scientist','Modelado y optimización'),('QA / BA','Métricas y ROI'),('UX / UI','Frontend e interfaz')] %}
+      <div style="display:flex;align-items:center;gap:.75rem;font-size:.875rem">
+        <span style="color:var(--eb);min-width:110px;font-weight:500">{{ role }}</span>
+        <span style="color:var(--fg6)">{{ desc }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- TECH STACK -->
+<div class="card" style="max-width:1100px">
+  <div class="card-title">Stack Tecnológico</div>
+  <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+    {% for tech in ['Python 3.12','Flask','scikit-learn','TF-IDF','SVM','Naive Bayes','pandas','joblib','HTML/CSS/JS','NLTK (stopwords)'] %}
+    <span style="font-family:monospace;font-size:.8125rem;padding:.3rem .75rem;border:1px solid var(--bd);border-radius:4px;color:var(--fg6);transition:all .2s"
+          onmouseover="this.style.borderColor='var(--eb)';this.style.color='var(--eb)'"
+          onmouseout="this.style.borderColor='var(--bd)';this.style.color='var(--fg6)'">{{ tech }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

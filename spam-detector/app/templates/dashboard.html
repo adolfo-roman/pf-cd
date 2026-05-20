@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}DataNova — Panel{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Panel de Spam</h1>
+<p class="page-sub">Monitorea el rendimiento de detección en tiempo real</p>
+
+<!-- STATS GRID -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card__top">
+      <div class="stat-card__icon grad-blue">💬</div>
+      <span class="stat-card__change">+18%</span>
+    </div>
+    <div class="stat-card__val">2,847</div>
+    <div class="stat-card__lbl">Mensajes Analizados</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__top">
+      <div class="stat-card__icon grad-red">⚠️</div>
+      <span class="stat-card__change neg">-8%</span>
+    </div>
+    <div class="stat-card__val">412</div>
+    <div class="stat-card__lbl">Spam Detectado</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__top">
+      <div class="stat-card__icon grad-green">✅</div>
+      <span class="stat-card__change">+22%</span>
+    </div>
+    <div class="stat-card__val">2,435</div>
+    <div class="stat-card__lbl">No Spam</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card__top">
+      <div class="stat-card__icon grad-purple">📈</div>
+      <span class="stat-card__change">+2.3%</span>
+    </div>
+    <div class="stat-card__val">96.8%</div>
+    <div class="stat-card__lbl">Precisión Promedio</div>
+  </div>
+</div>
+
+<!-- CHARTS ROW -->
+<div class="charts-row">
+  <!-- Weekly bar chart -->
+  <div class="card">
+    <div class="card-title">Actividad Semanal</div>
+    <div class="bar-legend">
+      <span><span class="bar-legend-dot" style="background:var(--eb)"></span>Total análisis</span>
+      <span><span class="bar-legend-dot" style="background:var(--red)"></span>Spam detectado</span>
+    </div>
+    <div class="bar-chart-wrap" id="weekly-chart">
+      {% set days = [('Lun',89,12),('Mar',102,18),('Mié',95,14),('Jue',118,22),('Vie',107,16),('Sáb',76,8),('Dom',83,11)] %}
+      {% for day, total, spam in days %}
+      <div class="bar-row">
+        <div class="bar-day">{{ day }}</div>
+        <div class="bar-track">
+          <div class="bar-fill total" style="width:0%" data-target="{{ (total/118*100)|round|int }}"></div>
+          <div class="bar-fill-spam spam" style="width:0%;position:absolute;top:0;height:100%" data-target="{{ (spam/118*100)|round|int }}" data-spam="true"></div>
+        </div>
+        <div class="bar-val">{{ total }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Donut -->
+  <div class="card">
+    <div class="card-title">Distribución</div>
+    <div class="donut-wrap">
+      <svg class="donut-svg" width="180" height="180" viewBox="0 0 180 180">
+        <circle cx="90" cy="90" r="70" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="28"/>
+        <!-- Ham: green 2435/(2435+412)=85.5% of 439.82 = 376.1 -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#10b981" stroke-width="28"
+          stroke-dasharray="376 64" stroke-dashoffset="110" stroke-linecap="round"/>
+        <!-- Spam: red -->
+        <circle cx="90" cy="90" r="70" fill="none" stroke="#ef4444" stroke-width="28"
+          stroke-dasharray="60 380" stroke-dashoffset="-266" stroke-linecap="round"/>
+        <text x="90" y="85" text-anchor="middle" fill="#f0f0f8" font-size="22" font-weight="700" font-family="Inter">85.6%</text>
+        <text x="90" y="106" text-anchor="middle" fill="rgba(240,240,248,.5)" font-size="11" font-family="Inter">No Spam</text>
+      </svg>
+      <div class="donut-legend">
+        <div class="donut-legend-row">
+          <div class="donut-legend-label"><span class="donut-legend-dot" style="background:#10b981"></span>No Spam</div>
+          <span class="donut-legend-val">2,435</span>
+        </div>
+        <div class="donut-legend-row">
+          <div class="donut-legend-label"><span class="donut-legend-dot" style="background:#ef4444"></span>Spam</div>
+          <span class="donut-legend-val">412</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM ROW: recent + quick action -->
+<div class="bottom-row">
+  <!-- Recent analyses -->
+  <div class="card">
+    <div class="card-title">Análisis Recientes</div>
+    {% set recent = [
+      ('Felicidades! Has ganado un iPhone...','Spam',98,'hace 5 min'),
+      ('Hola, confirmo nuestra reunión...','Ham',94,'hace 12 min'),
+      ('URGENTE: Tu cuenta será suspendida...','Spam',99,'hace 20 min'),
+      ('Buenos días equipo, adjunto el reporte...','Ham',97,'hace 35 min'),
+      ('Haz clic aquí para reclamar tu premio...','Spam',96,'hace 1 hora'),
+    ] %}
+    {% for text, cls, conf, time in recent %}
+    <div class="recent-item">
+      <div style="flex:1;min-width:0">
+        <div class="recent-item__meta">
+          <span class="recent-item__dot" style="background:{% if cls=='Spam' %}var(--red){% else %}var(--green){% endif %}"></span>
+          <span>{{ time }}</span>
+        </div>
+        <div class="recent-item__text" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ text }}</div>
+      </div>
+      <div style="text-align:right">
+        <span class="recent-item__badge {% if cls=='Spam' %}badge-spam{% else %}badge-ham{% endif %}">
+          {% if cls=='Spam' %}Spam{% else %}No Spam{% endif %}
+        </span>
+        <div class="recent-item__conf">{{ conf }}%</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Quick action -->
+  <div class="quick-card">
+    <div class="card-title" style="margin-bottom:1rem">Acción Rápida</div>
+    <a href="{{ url_for('main.index') }}" class="quick-card__btn">
+      <span class="quick-card__btn-icon">💬</span>
+      Analizar Texto<br>
+      <small style="opacity:.85;font-size:.875rem">Detectar spam ahora</small>
+    </a>
+    <div class="quick-card__tip">
+      <div class="quick-card__tip-title">
+        <span style="color:var(--eb)">⚡</span> Tip del día
+      </div>
+      <p>Los mensajes con urgencia excesiva, promesas de premios y números de teléfono desconocidos suelen ser spam.</p>
+    </div>
+  </div>
+</div>
+
+<!-- METRICS TABLE -->
+<div class="card" style="margin-bottom:2rem">
+  <div class="card-title">Rendimiento de Modelos ML</div>
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:.875rem">
+      <thead>
+        <tr>
+          {% for h in ['Modelo','Accuracy','Precision','Recall','F1-Score','AUC-ROC','Estado'] %}
+          <th style="text-align:left;padding:.6rem 1rem;font-size:.75rem;letter-spacing:.08em;color:var(--fg6);border-bottom:1px solid var(--bd);font-weight:600">{{ h|upper }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in metrics %}
+        <tr style="{% if loop.first %}background:rgba(0,102,255,.04){% endif %}">
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd)">
+            {% if loop.first %}<span style="font-size:.65rem;background:rgba(255,200,0,.15);color:#ffd700;border:1px solid rgba(255,200,0,.3);padding:.1rem .4rem;border-radius:3px;margin-right:.4rem">★ PROD</span>{% endif %}
+            <span style="font-family:monospace;font-size:.875rem">{{ m.model }}</span>
+          </td>
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd);font-family:monospace">{{ m.accuracy }}%</td>
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd)">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <div style="height:4px;width:{{ m.precision }}px;max-width:80px;background:var(--eb);border-radius:2px"></div>
+              <span style="font-family:monospace;font-size:.875rem">{{ m.precision }}%</span>
+            </div>
+          </td>
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd);font-family:monospace">{{ m.recall }}%</td>
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd);color:var(--eb);font-weight:600;font-family:monospace">{{ m.f1_score }}%</td>
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd);font-family:monospace">{{ m.auc }}%</td>
+          <td style="padding:.75rem 1rem;border-bottom:1px solid var(--bd)">
+            {% if loop.first %}
+            <span style="font-size:.7rem;background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);padding:.2rem .5rem;border-radius:3px">ACTIVO</span>
+            {% else %}
+            <span style="font-size:.7rem;background:var(--bg);color:var(--fg6);border:1px solid var(--bd);padding:.2rem .5rem;border-radius:3px">CANDIDATO</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

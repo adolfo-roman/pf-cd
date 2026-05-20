@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}DataNova — Bandeja de Entrada{% endblock %}
+
+{% block content %}
+<!-- DB STATUS BAR -->
+<div id="db-status-bar" style="display:none;margin-bottom:1rem;padding:.6rem 1rem;border-radius:.5rem;font-size:.8125rem;font-family:monospace;display:flex;align-items:center;gap:.6rem"></div>
+
+<h1 class="page-title" style="margin-bottom:.25rem">Bandeja de Entrada</h1>
+<p class="page-sub" style="margin-bottom:1.25rem">Selecciona un mensaje para analizarlo automáticamente</p>
+
+<!-- INBOX LAYOUT -->
+<div class="inbox-layout">
+
+  <!-- LEFT: message list -->
+  <div class="inbox-list" id="inbox-list">
+    <div class="inbox-list__header">
+      <div class="inbox-search-wrap">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="inbox-search" class="inbox-search" placeholder="Buscar mensajes...">
+      </div>
+    </div>
+    <div id="msg-list-inner">
+      <!-- skeleton while loading -->
+      {% for _ in range(6) %}
+      <div class="msg-skeleton">
+        <div class="msg-skeleton__avatar"></div>
+        <div class="msg-skeleton__lines">
+          <div class="msg-skeleton__line msg-skeleton__line--title"></div>
+          <div class="msg-skeleton__line msg-skeleton__line--sub"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- RIGHT: message detail + analysis -->
+  <div class="inbox-detail" id="inbox-detail">
+
+    <!-- Empty state -->
+    <div class="inbox-empty" id="inbox-empty">
+      <div class="inbox-empty__icon">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <p>Selecciona un mensaje de la lista<br>para analizarlo automáticamente</p>
+    </div>
+
+    <!-- Message + analysis (hidden until selected) -->
+    <div class="inbox-msg hidden" id="inbox-msg">
+
+      <!-- Message header -->
+      <div class="inbox-msg__header">
+        <div class="inbox-msg__avatar" id="msg-avatar">?</div>
+        <div style="flex:1;min-width:0">
+          <div class="inbox-msg__sender" id="msg-sender">—</div>
+          <div class="inbox-msg__subject" id="msg-subject">—</div>
+        </div>
+        <div class="inbox-msg__date" id="msg-date">—</div>
+      </div>
+
+      <!-- Message body -->
+      <div class="inbox-msg__body" id="msg-body">—</div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:var(--bd);margin:1.25rem 0"></div>
+
+      <!-- Auto-analysis section -->
+      <div class="inbox-analysis">
+        <div class="inbox-analysis__title">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          ANÁLISIS AUTOMÁTICO
+          <div class="analysis-spinner hidden" id="analysis-spinner"></div>
+        </div>
+
+        <!-- Analysis result -->
+        <div id="analysis-result" class="hidden">
+
+          <!-- Verdict row -->
+          <div class="analysis-verdict" id="analysis-verdict-box">
+            <div class="analysis-verdict__icon" id="analysis-icon">⚠️</div>
+            <div style="flex:1">
+              <div class="analysis-verdict__label" id="analysis-label">—</div>
+              <span class="confidence-badge" id="analysis-badge">—</span>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:1.5rem;font-weight:700" id="analysis-conf">—</div>
+              <div style="font-size:.75rem;color:var(--fg6)">confianza</div>
+            </div>
+          </div>
+
+          <!-- Confidence bar -->
+          <div style="margin-top:1rem">
+            <div class="confidence-track">
+              <div class="confidence-fill" id="analysis-fill" style="width:0%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--fg6);margin-top:.3rem">
+              <span id="analysis-ham-pct">—% HAM</span>
+              <span id="analysis-spam-pct">—% SPAM</span>
+            </div>
+          </div>
+
+          <!-- Signals -->
+          <div id="analysis-signals-wrap" class="hidden" style="margin-top:1rem">
+            <div class="signals-title">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/></svg>
+              SEÑALES DETECTADAS
+            </div>
+            <div id="analysis-signals-list" class="signals-list" style="margin-top:.5rem"></div>
+          </div>
+
+          <div id="analysis-no-signals" class="no-signals-panel hidden" style="margin-top:1rem">
+            <div class="signals-title" style="color:var(--green)">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              SIN SEÑALES DE SPAM
+            </div>
+            <p style="font-size:.8125rem;color:var(--fg6);margin-top:.4rem">No se detectaron patrones sospechosos en este mensaje.</p>
+          </div>
+
+          <!-- Token NLP -->
+          <div style="margin-top:1rem">
+            <div style="font-size:.65rem;color:var(--eb);letter-spacing:.1em;margin-bottom:.3rem">// TOKENS NLP</div>
+            <div id="analysis-tokens" style="background:var(--bg);border:1px solid var(--bd);border-left:3px solid var(--eb);border-radius:.5rem;padding:.5rem .75rem;font-size:.75rem;color:var(--fg6);font-family:monospace;word-break:break-all"></div>
+          </div>
+
+        </div><!-- /analysis-result -->
+
+        <!-- Loading state -->
+        <div class="loading-state" id="analysis-loading" style="min-height:80px">
+          <div class="loader"></div>
+          <span style="font-size:.875rem">Analizando mensaje…</span>
+        </div>
+
+      </div><!-- /inbox-analysis -->
+    </div><!-- /inbox-msg -->
+  </div><!-- /inbox-detail -->
+</div><!-- /inbox-layout -->
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/inbox.js') }}"></script>
+{% endblock %}

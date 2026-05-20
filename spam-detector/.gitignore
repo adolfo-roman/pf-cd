@@ -1,0 +1,57 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Entorno virtual ────────────────────────────────────────────
+venv/
+env/
+.venv/
+.env/
+
+# ── Variables de entorno / Secretos ───────────────────────────
+.env
+*.env
+!.env-template
+
+# ── Jupyter ────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb        # descomenta si no quieres versionar notebooks
+
+# ── Datos (archivos grandes) ───────────────────────────────────
+# data/raw/
+*.csv          # comenta si quieres versionar CSVs pequeños
+
+# ── Modelos serializados grandes ──────────────────────────────
+# ml_pipeline/models/*.joblib   # descomenta si son muy grandes (>100MB)
+*.onnx
+*.pkl
+
+# ── IDEs ──────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Flask ─────────────────────────────────────────────────────
+instance/
+.webassets-cache
+venv/
+.env

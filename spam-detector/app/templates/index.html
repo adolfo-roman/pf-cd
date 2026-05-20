@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}DataNova — Analizador de Spam{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Analizador de Spam</h1>
+<p class="page-sub">Ingresa un mensaje en español o inglés para detectar si es spam</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:1100px">
+
+  <!-- INPUT -->
+  <div class="card">
+    <label class="textarea-label">Mensaje a Analizar</label>
+    <textarea id="sms-input" class="sms-textarea"
+      placeholder="Escribe o pega el mensaje aquí...&#10;&#10;Ejemplo ES: ¡Felicidades! Has ganado un iPhone. Haz clic para reclamar tu premio.&#10;Ejemplo EN: FREE prize! Call 08002986030 to claim your reward NOW."
+      maxlength="2000"></textarea>
+    <div class="textarea-footer">
+      <span class="char-count"><span id="char-count">0</span> / 2000 caracteres</span>
+      <button class="clear-btn" id="clear-btn">Limpiar</button>
+    </div>
+    <button class="analyze-btn" id="analyze-btn">
+      <svg id="btn-send-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <svg id="btn-spin-icon" class="spin hidden" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      <span id="btn-text">Analizar Mensaje</span>
+    </button>
+
+    <!-- Ejemplos -->
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--bd)">
+      <div style="font-size:.8125rem;color:var(--fg6);margin-bottom:.6rem;letter-spacing:.05em">EJEMPLOS RÁPIDOS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <button class="example-btn" onclick="setExample(this)">💬 YOU WIN A CAR! Claim now.</button>
+        <button class="example-btn" onclick="setExample(this)">💬 ¡GANASTE UN AUTO! Reclama ya.</button>
+        <button class="example-btn" onclick="setExample(this)">💬 URGENTE: Tu cuenta será suspendida. Verifica en bit.ly/cl4im</button>
+        <button class="example-btn" onclick="setExample(this)">💬 Hola equipo, confirmo asistencia a la reunión del viernes a las 3 PM.</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card" id="result-panel">
+    <!-- Idle -->
+    <div class="result-idle" id="result-idle">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" style="color:var(--bd)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <p style="font-size:.9375rem">Ingresa un mensaje y presiona <strong>Analizar</strong><br>para obtener el veredicto</p>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state hidden" id="result-loading">
+      <div class="loader"></div>
+      <span>Procesando pipeline NLP…</span>
+    </div>
+
+    <!-- Verdict -->
+    <div class="result-verdict hidden" id="result-verdict">
+
+      <!-- Verdict box -->
+      <div class="verdict-box" id="verdict-box">
+        <div class="verdict-icon-wrap" id="verdict-icon">⚠️</div>
+        <div style="flex:1">
+          <div class="verdict-label" id="verdict-label">—</div>
+          <span class="confidence-badge" id="confidence-badge">—</span>
+          <div style="margin-top:1rem">
+            <div class="confidence-bar-label">
+              <span>Nivel de Confianza</span>
+              <span class="confidence-val" id="confidence-val">—</span>
+            </div>
+            <div class="confidence-track">
+              <div class="confidence-fill" id="confidence-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÑALES DETECTADAS — panel principal de explicación -->
+      <div id="signals-panel" class="signals-panel hidden">
+        <div class="signals-title">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          SEÑALES DETECTADAS
+        </div>
+        <div id="signals-list" class="signals-list"></div>
+      </div>
+
+      <!-- Sin señales (ham) -->
+      <div id="no-signals-panel" class="no-signals-panel hidden">
+        <div class="signals-title" style="color:var(--green)">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          SIN SEÑALES DE SPAM
+        </div>
+        <p style="font-size:.875rem;color:var(--fg6);margin-top:.5rem">
+          No se detectaron palabras clave sospechosas, mayúsculas excesivas, números de tarifa premium ni URLs peligrosas.
+        </p>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
+        <div class="mini-stat">
+          <span class="mini-stat__val" id="stat-chars">—</span>
+          <span class="mini-stat__lbl">CARACTERES</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat__val" id="stat-upper">—</span>
+          <span class="mini-stat__lbl">MAYÚSCULAS</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat__val" id="stat-digits">—</span>
+          <span class="mini-stat__lbl">DÍGITOS</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat__val" id="stat-ratio">—</span>
+          <span class="mini-stat__lbl">% MAYÚS.</span>
+        </div>
+      </div>
+
+      <!-- Texto procesado NLP -->
+      <div>
+        <div style="font-size:.7rem;color:var(--eb);letter-spacing:.1em;margin-bottom:.35rem">// TOKENS NLP (después de preprocesamiento)</div>
+        <div id="clean-text" style="background:var(--bg);border:1px solid var(--bd);border-left:3px solid var(--eb);border-radius:.5rem;padding:.6rem .8rem;font-size:.8125rem;color:var(--fg6);word-break:break-all;min-height:32px;font-family:monospace"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="card" style="padding:1rem;margin-top:0">
+        <div style="font-size:.875rem;font-weight:600;margin-bottom:.75rem">¿Fue correcta la clasificación?</div>
+        <div class="feedback-btns">
+          <button class="feedback-btn" id="fb-correct" onclick="setFeedback('correct')">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>
+            Correcta
+          </button>
+          <button class="feedback-btn" id="fb-incorrect" onclick="setFeedback('incorrect')">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/></svg>
+            Incorrecta
+          </button>
+        </div>
+        <p class="feedback-msg hidden" id="feedback-msg">¡Gracias! Tu retroalimentación mejora el modelo.</p>
+      </div>
+
+    </div><!-- /result-verdict -->
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/analyzer.js') }}"></script>
+{% endblock %}
