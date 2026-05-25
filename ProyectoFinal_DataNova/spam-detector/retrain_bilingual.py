@@ -24,6 +24,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 BASE   = Path(__file__).parent
 DATA   = BASE / "ml_pipeline" / "data" / "spam.csv"
+FEEDBACK = BASE / "data" / "feedback.csv"
 MODELS = BASE / "ml_pipeline" / "models"
 MODELS.mkdir(parents=True, exist_ok=True)
 RANDOM_STATE = 42
@@ -296,6 +297,20 @@ def build_dataset():
     df = pd.DataFrame(rows, columns=["v1","v2"])
     return df.drop_duplicates(subset="v2")
 
+
+def load_feedback_dataset():
+    if not FEEDBACK.exists():
+        return pd.DataFrame(columns=['v1', 'v2'])
+
+    df = pd.read_csv(FEEDBACK, encoding='utf-8')
+    if {'v1', 'v2'}.issubset(df.columns):
+        return df[['v1', 'v2']].dropna()
+    if {'label', 'text'}.issubset(df.columns):
+        return df[['label', 'text']].rename(columns={'label': 'v1', 'text': 'v2'}).dropna()
+    if {'actual_label', 'text'}.issubset(df.columns):
+        return df[['actual_label', 'text']].rename(columns={'actual_label': 'v1', 'text': 'v2'}).dropna()
+    return pd.DataFrame(columns=['v1', 'v2'])
+
 # ── Main ────────────────────────────────────────────────────────────────────
 print("📂 Cargando dataset original...")
 df_orig = pd.read_csv(DATA, encoding='latin-1')[['v1','v2']].dropna()
@@ -306,7 +321,10 @@ print("🧪 Generando datos sintéticos bilingües...")
 df_synth = build_dataset()
 print(f"   Sintéticos: {len(df_synth)} | spam={df_synth[df_synth.v1=='spam'].shape[0]} ham={df_synth[df_synth.v1=='ham'].shape[0]}")
 
-df = pd.concat([df_orig, df_synth], ignore_index=True).drop_duplicates(subset='v2').sample(frac=1, random_state=RANDOM_STATE)
+df_feedback = load_feedback_dataset()
+print(f"   Feedback: {len(df_feedback)} | spam={df_feedback[df_feedback.v1=='spam'].shape[0]} ham={df_feedback[df_feedback.v1=='ham'].shape[0]}")
+
+df = pd.concat([df_orig, df_synth, df_feedback], ignore_index=True).drop_duplicates(subset='v2').sample(frac=1, random_state=RANDOM_STATE)
 print(f"   Dataset total: {len(df)} | spam={df[df.v1=='spam'].shape[0]} ham={df[df.v1=='ham'].shape[0]}")
 
 print("⚙️  Feature engineering...")

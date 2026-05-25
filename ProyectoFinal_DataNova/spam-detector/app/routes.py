@@ -4,6 +4,7 @@ routes.py — Rutas Flask: páginas + API REST
 
 import csv
 import json
+from datetime import datetime
 from pathlib import Path
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 
@@ -13,6 +14,7 @@ from .database  import check_connection, get_inbox_messages, save_analysis, ensu
 main = Blueprint('main', __name__)
 
 DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
+FEEDBACK_FILE = DATA_DIR / 'feedback.csv'
 
 
 # ── Helpers métricas ──────────────────────────────────────────────────────
@@ -45,6 +47,25 @@ def _aggregate_metrics():
         aggregated.append({'model': name, **avg})
     aggregated.sort(key=lambda x: x['f1_score'], reverse=True)
     return aggregated
+
+
+def _append_feedback_example(actual_label: str, text: str, predicted_label: str, feedback_type: str):
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    file_exists = FEEDBACK_FILE.exists()
+    with open(FEEDBACK_FILE, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=['v1', 'v2', 'predicted_label', 'feedback', 'timestamp'],
+        )
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow({
+            'v1': actual_label,
+            'v2': text,
+            'predicted_label': predicted_label,
+            'feedback': feedback_type,
+            'timestamp': datetime.utcnow().isoformat(timespec='seconds') + 'Z',
+        })
 
 
 # ── Páginas ───────────────────────────────────────────────────────────────
@@ -88,6 +109,36 @@ def api_predict():
     save_analysis(inbox_id, result)
 
     return jsonify(result)
+
+
+# ── API: retroalimentación ───────────────────────────────────────────────
+@main.route('/api/feedback', methods=['POST'])
+def api_feedback():
+    data = request.get_json(force=True, silent=True) or {}
+    text = (data.get('text') or '').strip()
+    predicted_label = (data.get('predicted_label') or '').strip().lower()
+    feedback_type = (data.get('feedback') or '').strip().lower()
+
+    if not text:
+        return jsonify({'error': 'El campo "text" es obligatorio.'}), 400
+    if predicted_label not in {'spam', 'ham'}:
+        return jsonify({'error': 'predicted_label debe ser "spam" o "ham".'}), 400
+    if feedback_type not in {'correct', 'incorrect'}:
+        return jsonify({'error': 'feedback debe ser "correct" o "incorrect".'}), 400
+
+    actual_label = predicted_label if feedback_type == 'correct' else ('ham' if predicted_label == 'spam' else 'spam')
+    try:
+        _append_feedback_example(actual_label, text, predicted_label, feedback_type)
+    except Exception as exc:
+        return jsonify({'error': f'No se pudo guardar la retroalimentación: {exc}'}), 500
+
+    return jsonify({
+        'ok': True,
+        'message': 'Retroalimentación guardada para el próximo reentrenamiento.',
+        'actual_label': actual_label,
+        'predicted_label': predicted_label,
+        'feedback': feedback_type,
+    })
 
 
 # ── API: estado de la BD ──────────────────────────────────────────────────

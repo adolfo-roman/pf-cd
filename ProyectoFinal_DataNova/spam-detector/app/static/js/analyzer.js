@@ -12,6 +12,9 @@ const panelIdle    = document.getElementById('result-idle');
 const panelLoading = document.getElementById('result-loading');
 const panelVerdict = document.getElementById('result-verdict');
 
+let lastAnalysis = null;
+let feedbackSent = false;
+
 // Íconos por tipo de señal
 const SIGNAL_ICONS = {
   keywords:    '🔤',
@@ -60,6 +63,8 @@ async function analyze() {
 
     if (data.error) { showIdle(); alert('Error: ' + data.error); return; }
 
+    lastAnalysis = { text, label: data.label };
+    feedbackSent = false;
     showVerdict(data);
 
     // Guardar en historial de sesión
@@ -171,6 +176,7 @@ function showVerdict(data) {
   document.getElementById('fb-correct').classList.remove('correct');
   document.getElementById('fb-incorrect').classList.remove('incorrect');
   document.getElementById('feedback-msg').classList.add('hidden');
+  document.getElementById('feedback-msg').textContent = '¡Gracias! Tu retroalimentación mejora el modelo.';
 
   // Animación de entrada
   panelVerdict.style.opacity   = '0';
@@ -183,10 +189,48 @@ function showVerdict(data) {
 }
 
 // Feedback
-function setFeedback(type) {
-  document.getElementById('fb-correct').classList.remove('correct');
-  document.getElementById('fb-incorrect').classList.remove('incorrect');
+async function setFeedback(type) {
+  const msg = document.getElementById('feedback-msg');
+  const correctBtn = document.getElementById('fb-correct');
+  const incorrectBtn = document.getElementById('fb-incorrect');
+
+  if (!lastAnalysis) {
+    msg.textContent = 'Primero analiza un mensaje para poder registrar la corrección.';
+    msg.classList.remove('hidden');
+    return;
+  }
+
+  if (feedbackSent) {
+    return;
+  }
+
+  correctBtn.classList.remove('correct');
+  incorrectBtn.classList.remove('incorrect');
   document.getElementById(`fb-${type}`).classList.add(type);
-  document.getElementById('feedback-msg').classList.remove('hidden');
+
+  msg.textContent = 'Guardando retroalimentación...';
+  msg.classList.remove('hidden');
+
+  try {
+    const res = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: lastAnalysis.text,
+        predicted_label: lastAnalysis.label,
+        feedback: type,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      throw new Error(data.error || 'No se pudo guardar la retroalimentación.');
+    }
+
+    feedbackSent = true;
+    msg.textContent = data.message || 'Retroalimentación guardada para el próximo reentrenamiento.';
+  } catch (err) {
+    msg.textContent = err.message || 'Error al guardar la retroalimentación.';
+  }
 }
 window.setFeedback = setFeedback;
