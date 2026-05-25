@@ -71,7 +71,11 @@ def _append_feedback_example(actual_label: str, text: str, predicted_label: str,
 # ── Páginas ───────────────────────────────────────────────────────────────
 @main.route('/')
 def index():
-    return render_template('index.html')
+    return redirect(url_for('main.analyzer'))
+
+@main.route('/analyzer')
+def analyzer():
+    return render_template('analyzer.html')
 
 @main.route('/dashboard')
 def dashboard():
