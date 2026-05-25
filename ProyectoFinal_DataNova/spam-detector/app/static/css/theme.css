@@ -1,0 +1,92 @@
+/* static/css/theme.css - CORREGIDO */
+:root {
+  /* Light mode (default) */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #f8fafc;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --electric-blue: #0066ff;
+  --cyan: #00d4ff;
+  --purple: #8b5cf6;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --border: #334155;
+  --input: #1e293b;
+  --electric-blue: #3b82f6;
+  --cyan: #22d3ee;
+  --purple: #a78bfa;
+}
+
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Clases utilitarias con los colores correctos */
+.bg-background { background-color: var(--background); }
+.bg-card { background-color: var(--card); }
+.bg-input { background-color: var(--input); }
+.text-foreground { color: var(--foreground); }
+.border-border { border-color: var(--border); }
+
+.text-electric-blue { color: var(--electric-blue); }
+.text-cyan { color: var(--cyan); }
+.text-purple { color: var(--purple); }
+
+.bg-electric-blue { background-color: var(--electric-blue); }
+.bg-cyan { background-color: var(--cyan); }
+.bg-purple { background-color: var(--purple); }
+
+/* Versiones con opacidad */
+.bg-electric-blue\/10 { background-color: #0066ff10; }
+.bg-electric-blue\/20 { background-color: #0066ff20; }
+.bg-electric-blue\/30 { background-color: #0066ff30; }
+.bg-cyan\/10 { background-color: #00d4ff10; }
+.bg-cyan\/20 { background-color: #00d4ff20; }
+.bg-purple\/10 { background-color: #8b5cf610; }
+.bg-purple\/20 { background-color: #8b5cf620; }
+.bg-purple\/30 { background-color: #8b5cf630; }
+
+.dark .bg-electric-blue\/10 { background-color: #3b82f610; }
+.dark .bg-electric-blue\/20 { background-color: #3b82f620; }
+.dark .bg-electric-blue\/30 { background-color: #3b82f630; }
+.dark .bg-cyan\/10 { background-color: #22d3ee10; }
+.dark .bg-purple\/10 { background-color: #a78bfa10; }
+.dark .bg-purple\/20 { background-color: #a78bfa20; }
+.dark .bg-purple\/30 { background-color: #a78bfa30; }
+
+/* Gradientes */
+.gradient-text {
+  background: linear-gradient(135deg, var(--electric-blue), var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, var(--electric-blue), var(--cyan));
+}
+
+/* Animación pulse-slow */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.12);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}

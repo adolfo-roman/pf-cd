@@ -1,0 +1,39 @@
+{# templates/landing/base_landing.html - SIMPLIFICADO #}
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}DataNova — IA contra el Fraude Digital en México{% endblock %}</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Configuración mínima de Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+  
+  <!-- Custom styles (contiene todas las clases necesarias) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="antialiased overflow-x-hidden bg-background text-foreground">
+  {% block content %}{% endblock %}
+  
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/particles.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

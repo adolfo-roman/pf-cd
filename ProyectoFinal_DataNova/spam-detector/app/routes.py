@@ -6,7 +6,8 @@ import csv
 import json
 from datetime import datetime
 from pathlib import Path
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash
+from functools import wraps
 
 from .predictor import predict_message
 from .database  import check_connection, get_inbox_messages, save_analysis, ensure_tables, seed_demo_messages
@@ -69,30 +70,97 @@ def _append_feedback_example(actual_label: str, text: str, predicted_label: str,
 
 
 # ── Páginas ───────────────────────────────────────────────────────────────
-@main.route('/')
-def index():
-    return redirect(url_for('main.analyzer'))
+# Añadir decorador para login requerido
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            flash('Por favor inicia sesión para acceder a esta página.', 'warning')
+            return redirect(url_for('main.login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
+# MODIFICAR la ruta '/' - AHORA ES LA LANDING PAGE
+@main.route('/')
+def landing():
+    """Landing page pública"""
+    return render_template('landing/index.html')
+
+@main.route('/index')
+def index():
+    """Alias para compatibilidad con enlaces antiguos."""
+    return redirect(url_for('main.landing'))
+
+# NUEVA RUTA: Login (GET y POST)
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    """Página de login con autenticación simple"""
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+        name = request.form.get('name', '').strip()
+        remember = request.form.get('remember') == 'on'
+        
+        # Autenticación simple (demo)
+        # En producción, esto debería usar una base de datos
+        if email and password:
+            session['logged_in'] = True
+            session['user_email'] = email
+            session['user_name'] = name if name else email.split('@')[0]
+            if remember:
+                session.permanent = True
+            
+            flash(f'¡Bienvenido {session["user_name"]}!', 'success')
+            return redirect(url_for('main.analyzer'))
+        else:
+            flash('Correo y contraseña son requeridos.', 'error')
+    
+    return render_template('auth/login.html')
+
+# NUEVA RUTA: Logout
+@main.route('/logout')
+def logout():
+    """Cerrar sesión"""
+    session.clear()
+    flash('Has cerrado sesión correctamente.', 'info')
+    return redirect(url_for('main.landing'))
+
+# MODIFICAR analyzer - AHORA REQUIERE LOGIN
 @main.route('/analyzer')
+@login_required
 def analyzer():
     return render_template('analyzer.html')
 
+# MODIFICAR dashboard - REQUIERE LOGIN
 @main.route('/dashboard')
+@login_required
 def dashboard():
     metrics = _aggregate_metrics()
     return render_template('dashboard.html', metrics=metrics)
 
+# MODIFICAR inbox - REQUIERE LOGIN
 @main.route('/inbox')
+@login_required
 def inbox():
     return render_template('inbox.html')
 
+# MODIFICAR history - REQUIERE LOGIN
 @main.route('/history')
+@login_required
 def history():
     return render_template('history.html')
 
+# MODIFICAR about - REQUIERE LOGIN
 @main.route('/about')
+@login_required
 def about():
     return render_template('about.html')
+
+# NUEVA RUTA: Landing sections (para scroll suave)
+@main.route('/landing-section/<section>')
+def landing_section(section):
+    """Endpoint para cargar secciones individuales de la landing (opcional)"""
+    return render_template(f'landing/partials/{section}.html')
 
 
 # ── API: predicción ───────────────────────────────────────────────────────

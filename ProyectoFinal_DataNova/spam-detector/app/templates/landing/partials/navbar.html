@@ -1,0 +1,121 @@
+{# templates/landing/partials/navbar.html - ACTUALIZADO con estado de sesión #}
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="{{ url_for('main.landing') }}" class="flex items-center gap-3">
+        <!-- Light mode logo (color) -->
+        <img src="{{ url_for('static', filename='img/logo_colores.png') }}" alt="DataNova" class="w-24 h-24 object-contain dark:hidden">
+        <!-- Dark mode logo (white) -->
+        <img src="{{ url_for('static', filename='img/logo_blanco.png') }}" alt="DataNova" class="w-24 h-24 object-contain hidden dark:block">
+      </a>
+      
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#services" class="text-foreground/70 hover:text-foreground transition-colors relative group">
+          Servicios
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 gradient-bg group-hover:w-full transition-all duration-300"></span>
+        </a>
+        <a href="#about" class="text-foreground/70 hover:text-foreground transition-colors relative group">
+          Equipo
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 gradient-bg group-hover:w-full transition-all duration-300"></span>
+        </a>
+        <a href="#workflow" class="text-foreground/70 hover:text-foreground transition-colors relative group">
+          Pipeline ML
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 gradient-bg group-hover:w-full transition-all duration-300"></span>
+        </a>
+        <a href="#statistics" class="text-foreground/70 hover:text-foreground transition-colors relative group">
+          Estadísticas
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 gradient-bg group-hover:w-full transition-all duration-300"></span>
+        </a>
+        <a href="#contact" class="text-foreground/70 hover:text-foreground transition-colors relative group">
+          Contacto
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 gradient-bg group-hover:w-full transition-all duration-300"></span>
+        </a>
+      </div>
+      
+      <!-- Desktop Buttons -->
+      <div class="hidden md:flex items-center gap-4">
+        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-card border border-border hover:border-electric-blue transition-all duration-300">
+          <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+          <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+          </svg>
+        </button>
+        
+        {% if session.logged_in %}
+          <!-- Usuario autenticado -->
+          <div class="relative group">
+            <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border hover:border-electric-blue transition-all duration-300">
+              <div class="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm">
+                {{ session.user_name[0] | upper }}
+              </div>
+              <span class="text-sm">{{ session.user_name }}</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <a href="{{ url_for('main.analyzer') }}" class="block px-4 py-2 text-foreground/70 hover:text-electric-blue hover:bg-background transition-colors">
+                Ir al Analizador
+              </a>
+              <a href="{{ url_for('main.dashboard') }}" class="block px-4 py-2 text-foreground/70 hover:text-electric-blue hover:bg-background transition-colors">
+                Dashboard
+              </a>
+              <div class="border-t border-border my-1"></div>
+              <a href="{{ url_for('main.logout') }}" class="block px-4 py-2 text-red-500 hover:bg-background transition-colors">
+                Cerrar Sesión
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <!-- Usuario no autenticado -->
+          <a href="{{ url_for('main.login') }}" class="px-6 py-2.5 rounded-lg gradient-bg text-white hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M12 4v16m8-8H4"/>
+            </svg>
+            Probar Demo
+          </a>
+        {% endif %}
+      </div>
+      
+      <!-- Mobile menu button (mismo código anterior) -->
+      <!-- ... -->
+    </div>
+  </div>
+  
+  <!-- Mobile menu actualizado -->
+  <div id="mobile-menu" class="hidden md:hidden fixed inset-x-0 top-16 bg-card border-b border-border shadow-xl z-40">
+    <div class="px-4 py-6 space-y-4">
+      <a href="#services" class="mobile-nav-link block text-foreground/70 hover:text-foreground py-2">Servicios</a>
+      <a href="#about" class="mobile-nav-link block text-foreground/70 hover:text-foreground py-2">Equipo</a>
+      <a href="#workflow" class="mobile-nav-link block text-foreground/70 hover:text-foreground py-2">Pipeline ML</a>
+      <a href="#statistics" class="mobile-nav-link block text-foreground/70 hover:text-foreground py-2">Estadísticas</a>
+      <a href="#contact" class="mobile-nav-link block text-foreground/70 hover:text-foreground py-2">Contacto</a>
+      
+      <div class="flex gap-4 pt-4 border-t border-border">
+        <button onclick="toggleTheme()" class="flex-1 p-3 rounded-lg gradient-bg text-white">🌓 Tema</button>
+        {% if session.logged_in %}
+          <a href="{{ url_for('main.analyzer') }}" class="flex-1 p-3 rounded-lg bg-card border border-border text-center">Analizador</a>
+        {% else %}
+          <a href="{{ url_for('main.login') }}" class="flex-1 p-3 rounded-lg bg-card border border-border text-center">Demo</a>
+        {% endif %}
+      </div>
+      
+      {% if session.logged_in %}
+        <a href="{{ url_for('main.logout') }}" class="block w-full p-3 rounded-lg bg-red-500/10 text-red-500 text-center border border-red-500/30">
+          Cerrar Sesión
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  <div id="mobile-overlay" class="hidden fixed inset-0 bg-black/50 z-30" onclick="toggleMobileMenu()"></div>
+</nav>

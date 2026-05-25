@@ -1,0 +1,111 @@
+{# templates/landing/partials/testimonials.html #}
+<!-- Testimonials Section - INVESTIGACIÓN ACADÉMICA -->
+<section class="py-24 md:py-32 bg-background relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple/5 to-transparent"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16 animate-on-scroll">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-electric-blue/10 to-purple/10 border border-electric-blue/30 mb-6">
+        <span class="gradient-text text-sm">
+          Investigación y Desarrollo
+        </span>
+      </div>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl mb-6">
+        <span class="gradient-text">
+          Respaldados por la Ciencia
+        </span>
+      </h2>
+      <p class="max-w-2xl mx-auto text-lg text-foreground/70">
+        Nuestros modelos se basan en datasets académicos y algoritmos validados por la comunidad científica
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Card 1: SpearPhishMX -->
+      <div class="p-8 rounded-2xl bg-card border border-border hover:border-electric-blue/50 transition-all duration-300 animate-on-scroll">
+        <svg class="w-12 h-12 text-electric-blue mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <h3 class="text-xl mb-2">SpearPhishMX</h3>
+        <p class="text-foreground/60 text-sm mb-3">Dataset académico 2024</p>
+        <p class="text-foreground/70 leading-relaxed">
+          Corpus en español con 3,006 correos etiquetados para phishing dirigido, con atributos sobre URLs y destinatarios.
+        </p>
+        <div class="mt-4 pt-4 border-t border-border">
+          <span class="inline-block px-3 py-1 rounded-full bg-electric-blue/10 text-electric-blue text-xs">3,006 mensajes</span>
+          <span class="inline-block px-3 py-1 rounded-full bg-cyan/10 text-cyan text-xs ml-2">Español</span>
+        </div>
+      </div>
+
+      <!-- Card 2: SpaPhish -->
+      <div class="p-8 rounded-2xl bg-card border border-border hover:border-cyan/50 transition-all duration-300 animate-on-scroll">
+        <svg class="w-12 h-12 text-cyan mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        <h3 class="text-xl mb-2">SpaPhish</h3>
+        <p class="text-foreground/60 text-sm mb-3">Anotaciones psicológicas</p>
+        <p class="text-foreground/70 leading-relaxed">
+          Dataset con anotaciones explícitas de autoridad, prueba social, afinidad, reciprocidad y distracción.
+        </p>
+        <div class="mt-4 pt-4 border-t border-border">
+          <span class="inline-block px-3 py-1 rounded-full bg-cyan/10 text-cyan text-xs">Ingeniería Social</span>
+          <span class="inline-block px-3 py-1 rounded-full bg-purple/10 text-purple text-xs ml-2">Explicabilidad</span>
+        </div>
+      </div>
+
+      <!-- Card 3: XGBoost + Random Forest -->
+      <div class="p-8 rounded-2xl bg-card border border-border hover:border-purple/50 transition-all duration-300 animate-on-scroll">
+        <svg class="w-12 h-12 text-purple mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M18 10v4m-6-4v4m-6-4v4M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+        </svg>
+        <h3 class="text-xl mb-2">Algoritmos Validados</h3>
+        <p class="text-foreground/60 text-sm mb-3">AUC hasta 99%</p>
+        <p class="text-foreground/70 leading-relaxed">
+          XGBoost, Random Forest y SVM muestran excelente desempeño en detección de fraude según estudios recientes.
+        </p>
+        <div class="mt-4 pt-4 border-t border-border">
+          <span class="inline-block px-3 py-1 rounded-full bg-purple/10 text-purple text-xs">XGBoost AUC 0.99</span>
+          <span class="inline-block px-3 py-1 rounded-full bg-electric-blue/10 text-electric-blue text-xs ml-2">RF AUC 0.98</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado del arte resumido -->
+    <div class="mt-12 p-6 rounded-2xl bg-card/50 border border-border animate-on-scroll">
+      <h4 class="text-center text-lg mb-4 gradient-text">Estado del Arte en Detección de Fraude</h4>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="text-left py-2 px-3">Estudio</th>
+              <th class="text-left py-2 px-3">Dataset</th>
+              <th class="text-left py-2 px-3">Mejor Modelo</th>
+              <th class="text-left py-2 px-3">Rendimiento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-border">
+              <td class="py-2 px-3">Fraude Transacciones (2025)</td>
+              <td class="py-2 px-3">Datos públicos</td>
+              <td class="py-2 px-3">XGBoost</td>
+              <td class="py-2 px-3">AUC 0.99</td>
+            </tr>
+            <tr class="border-b border-border">
+              <td class="py-2 px-3">Fraude Transacciones (2025)</td>
+              <td class="py-2 px-3">Datos públicos</td>
+              <td class="py-2 px-3">Random Forest</td>
+              <td class="py-2 px-3">AUC 0.98</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-3">Phishing Web (2023)</td>
+              <td class="py-2 px-3">Sitios web</td>
+              <td class="py-2 px-3">Decision Tree</td>
+              <td class="py-2 px-3">97-99%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
