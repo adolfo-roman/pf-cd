@@ -1,0 +1,131 @@
+{# templates/landing/partials/workflow.html #}
+<!-- Workflow Section - Pipeline de ML -->
+<section id="workflow" class="py-24 md:py-32 bg-background relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-electric-blue/5 via-transparent to-purple/5"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16 animate-on-scroll">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-electric-blue/10 to-purple/10 border border-electric-blue/30 mb-6">
+        <span class="gradient-text text-sm">
+          Pipeline de Machine Learning
+        </span>
+      </div>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl mb-6">
+        <span class="gradient-text">
+          Del Texto a la Predicción
+        </span>
+      </h2>
+      <p class="max-w-2xl mx-auto text-lg text-foreground/70">
+        Flujo completo de procesamiento para detectar spam y phishing utilizando NLP y algoritmos de última generación
+      </p>
+    </div>
+
+    <div class="relative">
+      <div class="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-electric-blue via-cyan to-purple opacity-30"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <!-- Step 1: Recolección -->
+        <div class="animate-on-scroll">
+          <div class="flex flex-col items-center text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 rounded-2xl gradient-bg p-0.5 hover:scale-110 transition-transform duration-300">
+                <div class="w-full h-full rounded-2xl bg-background flex items-center justify-center">
+                  <svg class="w-10 h-10 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 4v16h16V4H4zm2 4h12v2H6V8zm0 4h12v2H6v-2zm0 4h8v2H6v-2z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm">1</div>
+            </div>
+            <h3 class="text-xl mb-3">Recolección</h3>
+            <p class="text-foreground/70 leading-relaxed text-sm">
+              SMS, correos electrónicos y mensajes de WhatsApp de fuentes reales en México
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2: Limpieza -->
+        <div class="animate-on-scroll">
+          <div class="flex flex-col items-center text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 rounded-2xl gradient-bg p-0.5 hover:scale-110 transition-transform duration-300">
+                <div class="w-full h-full rounded-2xl bg-background flex items-center justify-center">
+                  <svg class="w-10 h-10 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 6h18M3 12h18M3 18h18"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm">2</div>
+            </div>
+            <h3 class="text-xl mb-3">Limpieza</h3>
+            <p class="text-foreground/70 leading-relaxed text-sm">
+              Normalización, eliminación de ruido, conservación de URLs, emails y números
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3: Vectorización -->
+        <div class="animate-on-scroll">
+          <div class="flex flex-col items-center text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 rounded-2xl gradient-bg p-0.5 hover:scale-110 transition-transform duration-300">
+                <div class="w-full h-full rounded-2xl bg-background flex items-center justify-center">
+                  <svg class="w-10 h-10 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm">3</div>
+            </div>
+            <h3 class="text-xl mb-3">Vectorización</h3>
+            <p class="text-foreground/70 leading-relaxed text-sm">
+              TF-IDF y embeddings para convertir texto en representaciones numéricas
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4: Modelado -->
+        <div class="animate-on-scroll">
+          <div class="flex flex-col items-center text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 rounded-2xl gradient-bg p-0.5 hover:scale-110 transition-transform duration-300">
+                <div class="w-full h-full rounded-2xl bg-background flex items-center justify-center">
+                  <svg class="w-10 h-10 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm">4</div>
+            </div>
+            <h3 class="text-xl mb-3">Modelado</h3>
+            <p class="text-foreground/70 leading-relaxed text-sm">
+              XGBoost, Random Forest y redes neuronales con validación cruzada
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 5: Despliegue -->
+        <div class="animate-on-scroll">
+          <div class="flex flex-col items-center text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 rounded-2xl gradient-bg p-0.5 hover:scale-110 transition-transform duration-300">
+                <div class="w-full h-full rounded-2xl bg-background flex items-center justify-center">
+                  <svg class="w-10 h-10 text-electric-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white text-sm">5</div>
+            </div>
+            <h3 class="text-xl mb-3">Despliegue</h3>
+            <p class="text-foreground/70 leading-relaxed text-sm">
+              API en producción con monitoreo continuo y detección de drift
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

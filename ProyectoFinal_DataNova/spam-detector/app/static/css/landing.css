@@ -1,0 +1,72 @@
+/* static/css/landing.css */
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--border);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--electric-blue);
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+/* static/css/theme.css - Añadir esta animación */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.12);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform-origin: center center;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Testimonials slider */
+.testimonials-slider .slick-dots {
+  bottom: -50px;
+}
+
+.testimonials-slider .slick-dots li button:before {
+  color: var(--electric-blue);
+  opacity: 0.3;
+}
+
+.testimonials-slider .slick-dots li.slick-active button:before {
+  opacity: 1;
+}
+
+/* Canvas particles */
+#particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.3;
+}

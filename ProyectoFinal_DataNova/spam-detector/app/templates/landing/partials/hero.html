@@ -1,0 +1,102 @@
+{# templates/landing/partials/hero.html - CORREGIDO con animaciones completas #}
+<!-- Hero Section - CONTENIDO ORIGINAL -->
+<section
+  class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background to-background/50">
+  <canvas id="particle-canvas" class="absolute inset-0 opacity-30"></canvas>
+
+  <!-- Gradient overlay animado -->
+  <div class="absolute inset-0 bg-gradient-to-br from-electric-blue/10 via-transparent to-purple/10"></div>
+
+  <!-- Círculos pulsantes de colores -->
+  <div
+    class="absolute top-1/4 left-1/4 w-96 h-96 rounded-full animate-pulse-slow z-10 pointer-events-none blur-2xl bg-electric-blue/30 dark:blur-xl dark:bg-electric-blue/70">
+  </div>
+  <div
+    class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full animate-pulse-slow z-10 pointer-events-none blur-2xl bg-purple/30 dark:blur-xl dark:bg-purple/70"
+    class="anim-delay-1s"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20 pb-16">
+    <div class="space-y-8 animate-on-scroll">
+      <div
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-electric-blue/10 to-purple/10 border border-electric-blue/30">
+        <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+        </svg>
+        <span class="gradient-text text-sm">
+          Inteligencia Artificial Avanzada
+        </span>
+      </div>
+
+      <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight">
+        <span class="block">Transforma Datos en</span>
+        <span class="block mt-2 pb-4 gradient-text">
+          Soluciones Inteligentes
+        </span>
+      </h1>
+
+      <p class="max-w-3xl mx-auto text-lg md:text-xl text-foreground/70 leading-relaxed">
+        Plataforma de detección de spam y phishing con Inteligencia Artificial, desarrollada por DataNova para UNAM y Kyndryl.
+        Analiza correos en tiempo real y protege a los usuarios de fraudes y mensajes maliciosos.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+        <a href="{{ url_for('main.login', register='1') }}"
+          class="group px-8 py-4 rounded-xl gradient-bg text-white hover:shadow-2xl transition-all duration-300 flex items-center gap-2 text-lg">
+          Crear Cuenta Gratis
+          <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+        <a href="{{ url_for('main.login') }}"
+          class="px-8 py-4 rounded-xl bg-card border border-border hover:border-electric-blue hover:shadow-lg transition-all duration-300 flex items-center gap-2 text-lg">
+          Iniciar Sesión
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto pt-16">
+        <!-- Estadística 1: Phishing -->
+        <div
+          class="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-electric-blue/50 transition-all duration-300 group">
+          <svg class="w-8 h-8 mx-auto mb-3 text-electric-blue group-hover:text-cyan transition-colors" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <div class="text-2xl mb-1">13M+</div>
+          <div class="text-sm text-foreground/60">Víctimas de phishing</div>
+          <div class="text-xs text-foreground/40 mt-1">en los últimos 7 años</div>
+        </div>
+
+        <!-- Estadística 2: Pérdidas económicas -->
+        <div
+          class="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-cyan/50 transition-all duration-300 group">
+          <svg class="w-8 h-8 mx-auto mb-3 text-electric-blue group-hover:text-cyan transition-colors" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+          </svg>
+          <div class="text-2xl mb-1">$20,000M</div>
+          <div class="text-sm text-foreground/60">Pérdidas por phishing</div>
+          <div class="text-xs text-foreground/40 mt-1">solo en 2024</div>
+        </div>
+
+        <!-- Estadística 3: Denuncias -->
+        <div
+          class="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-purple/50 transition-all duration-300 group">
+          <svg class="w-8 h-8 mx-auto mb-3 text-electric-blue group-hover:text-cyan transition-colors" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <div class="text-2xl mb-1">108,724</div>
+          <div class="text-sm text-foreground/60">Denuncias por fraude</div>
+          <div class="text-xs text-foreground/40 mt-1">en 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent"></div>
+</section>
