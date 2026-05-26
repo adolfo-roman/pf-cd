@@ -2,14 +2,22 @@
 gmail.py — Integración con Gmail API (OAuth2 + lectura de bandeja)
 Requiere: google-auth-oauthlib, google-api-python-client
 Archivo credentials.json descargado de Google Cloud Console.
+Token almacenado por usuario: token_<user_id>.json
 """
 
 import base64
 from pathlib import Path
 
-SCOPES      = ['https://www.googleapis.com/auth/gmail.readonly']
-TOKEN_PATH  = Path(__file__).resolve().parents[1] / 'token.json'
-CREDS_PATH  = Path(__file__).resolve().parents[1] / 'credentials.json'
+SCOPES     = ['https://www.googleapis.com/auth/gmail.readonly']
+CREDS_PATH = Path(__file__).resolve().parents[1] / 'credentials.json'
+_TOKENS_DIR = Path(__file__).resolve().parents[1]
+
+
+def _token_path(user_id=None) -> Path:
+    """Devuelve la ruta del token para el usuario dado (o token global si no hay user_id)."""
+    if user_id:
+        return _TOKENS_DIR / f'token_{user_id}.json'
+    return _TOKENS_DIR / 'token.json'
 
 
 def has_credentials() -> bool:
@@ -27,27 +35,28 @@ def get_redirect_uri() -> str:
     return uris[0]
 
 
-def _load_creds():
+def _load_creds(user_id=None):
     from google.oauth2.credentials import Credentials
-    if TOKEN_PATH.exists():
-        return Credentials.from_authorized_user_file(str(TOKEN_PATH), SCOPES)
+    tp = _token_path(user_id)
+    if tp.exists():
+        return Credentials.from_authorized_user_file(str(tp), SCOPES)
     return None
 
 
-def _refresh_if_needed(creds):
+def _refresh_if_needed(creds, user_id=None):
     if creds and creds.expired and creds.refresh_token:
         from google.auth.transport.requests import Request
         creds.refresh(Request())
-        TOKEN_PATH.write_text(creds.to_json())
+        _token_path(user_id).write_text(creds.to_json())
     return creds
 
 
-def is_connected() -> bool:
+def is_connected(user_id=None) -> bool:
     try:
-        creds = _load_creds()
+        creds = _load_creds(user_id)
         if not creds:
             return False
-        creds = _refresh_if_needed(creds)
+        creds = _refresh_if_needed(creds, user_id)
         return creds.valid
     except Exception:
         return False
@@ -62,27 +71,28 @@ def get_auth_url(redirect_uri: str) -> str:
     return auth_url
 
 
-def exchange_code(code: str, redirect_uri: str) -> None:
+def exchange_code(code: str, redirect_uri: str, user_id=None) -> None:
     from google_auth_oauthlib.flow import Flow
     flow = Flow.from_client_secrets_file(
         str(CREDS_PATH), scopes=SCOPES, redirect_uri=redirect_uri
     )
     flow.fetch_token(code=code)
-    TOKEN_PATH.write_text(flow.credentials.to_json())
+    _token_path(user_id).write_text(flow.credentials.to_json())
 
 
-def disconnect() -> None:
-    if TOKEN_PATH.exists():
-        TOKEN_PATH.unlink()
+def disconnect(user_id=None) -> None:
+    tp = _token_path(user_id)
+    if tp.exists():
+        tp.unlink()
 
 
-def get_messages(max_results: int = 25) -> list:
+def get_messages(max_results: int = 25, user_id=None) -> list:
     from googleapiclient.discovery import build
 
-    creds = _load_creds()
+    creds = _load_creds(user_id)
     if not creds:
         raise RuntimeError('Gmail no conectado. Autoriza primero.')
-    creds = _refresh_if_needed(creds)
+    creds = _refresh_if_needed(creds, user_id)
     if not creds.valid:
         raise RuntimeError('Token de Gmail inválido. Reconecta tu cuenta.')
 

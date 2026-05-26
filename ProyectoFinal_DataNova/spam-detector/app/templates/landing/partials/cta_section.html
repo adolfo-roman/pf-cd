@@ -3,7 +3,7 @@
 <section class="py-24 md:py-32 relative overflow-hidden">
   <div class="absolute inset-0 bg-gradient-to-br from-electric-blue/20 via-purple/20 to-cyan/20"></div>
   <div class="absolute top-0 left-0 w-96 h-96 bg-electric-blue/30 rounded-full blur-3xl animate-pulse-slow"></div>
-  <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple/30 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple/30 rounded-full blur-3xl animate-pulse-slow anim-delay-1s"></div>
 
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="text-center p-12 md:p-16 rounded-3xl bg-card/50 backdrop-blur-sm border border-electric-blue/30 animate-on-scroll">
@@ -23,11 +23,14 @@
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="{{ url_for('main.login') }}" class="group inline-flex items-center gap-2 px-10 py-5 rounded-xl gradient-bg text-white text-lg hover:shadow-2xl transition-all duration-300">
-          Probar Demo Gratis
+        <a href="{{ url_for('main.login', register='1') }}" class="group inline-flex items-center gap-2 px-10 py-5 rounded-xl gradient-bg text-white text-lg hover:shadow-2xl transition-all duration-300">
+          Crear Cuenta Gratis
           <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
+        </a>
+        <a href="{{ url_for('main.login') }}" class="inline-flex items-center gap-2 px-10 py-5 rounded-xl bg-card border border-border hover:border-electric-blue hover:shadow-lg transition-all duration-300 text-lg">
+          Ya tengo cuenta
         </a>
       </div>
     </div>

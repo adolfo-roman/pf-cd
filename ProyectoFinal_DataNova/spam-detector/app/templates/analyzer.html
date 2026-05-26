@@ -5,7 +5,7 @@
 <h1 class="page-title">Analizador de Spam</h1>
 <p class="page-sub">Ingresa un mensaje en español o inglés para detectar si es spam</p>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:1100px">
+<div class="analyzer-grid">
 
   <!-- INPUT -->
   <div class="card">
@@ -24,9 +24,9 @@
     </button>
 
     <!-- Ejemplos -->
-    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--bd)">
-      <div style="font-size:.8125rem;color:var(--fg6);margin-bottom:.6rem;letter-spacing:.05em">EJEMPLOS RÁPIDOS</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+    <div class="examples-header">
+      <div class="examples-label">EJEMPLOS RÁPIDOS</div>
+      <div class="examples-grid">
         <button class="example-btn" onclick="setExample(this)">💬 YOU WIN A CAR! Claim now.</button>
         <button class="example-btn" onclick="setExample(this)">💬 ¡GANASTE UN AUTO! Reclama ya.</button>
         <button class="example-btn" onclick="setExample(this)">💬 URGENTE: Tu cuenta será suspendida. Verifica en bit.ly/cl4im</button>
@@ -39,8 +39,8 @@
   <div class="card" id="result-panel">
     <!-- Idle -->
     <div class="result-idle" id="result-idle">
-      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" style="color:var(--bd)"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      <p style="font-size:.9375rem">Ingresa un mensaje y presiona <strong>Analizar</strong><br>para obtener el veredicto</p>
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24" class="idle-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <p class="idle-text">Ingresa un mensaje y presiona <strong>Analizar</strong><br>para obtener el veredicto</p>
     </div>
 
     <!-- Loading -->
@@ -55,10 +55,10 @@
       <!-- Verdict box -->
       <div class="verdict-box" id="verdict-box">
         <div class="verdict-icon-wrap" id="verdict-icon">⚠️</div>
-        <div style="flex:1">
+        <div class="verdict-content">
           <div class="verdict-label" id="verdict-label">—</div>
           <span class="confidence-badge" id="confidence-badge">—</span>
-          <div style="margin-top:1rem">
+          <div class="verdict-bars">
             <div class="confidence-bar-label">
               <span>Nivel de Confianza</span>
               <span class="confidence-val" id="confidence-val">—</span>
@@ -81,17 +81,17 @@
 
       <!-- Sin señales (ham) -->
       <div id="no-signals-panel" class="no-signals-panel hidden">
-        <div class="signals-title" style="color:var(--green)">
+        <div class="signals-title signals-title--ham">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           SIN SEÑALES DE SPAM
         </div>
-        <p style="font-size:.875rem;color:var(--fg6);margin-top:.5rem">
+        <p class="no-signals-desc">
           No se detectaron palabras clave sospechosas, mayúsculas excesivas, números de tarifa premium ni URLs peligrosas.
         </p>
       </div>
 
       <!-- Stats row -->
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
+      <div class="stats-row">
         <div class="mini-stat">
           <span class="mini-stat__val" id="stat-chars">—</span>
           <span class="mini-stat__lbl">CARACTERES</span>
@@ -112,13 +112,13 @@
 
       <!-- Texto procesado NLP -->
       <div>
-        <div style="font-size:.7rem;color:var(--eb);letter-spacing:.1em;margin-bottom:.35rem">// TOKENS NLP (después de preprocesamiento)</div>
-        <div id="clean-text" style="background:var(--bg);border:1px solid var(--bd);border-left:3px solid var(--eb);border-radius:.5rem;padding:.6rem .8rem;font-size:.8125rem;color:var(--fg6);word-break:break-all;min-height:32px;font-family:monospace"></div>
+        <div class="nlp-tokens-label">// TOKENS NLP (después de preprocesamiento)</div>
+        <div id="clean-text" class="nlp-tokens-box"></div>
       </div>
 
       <!-- Feedback -->
-      <div class="card" style="padding:1rem;margin-top:0">
-        <div style="font-size:.875rem;font-weight:600;margin-bottom:.75rem">¿Fue correcta la clasificación?</div>
+      <div class="card card--compact">
+        <div class="feedback-title">¿Fue correcta la clasificación?</div>
         <div class="feedback-btns">
           <button class="feedback-btn" id="fb-correct" onclick="setFeedback('correct')">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/></svg>

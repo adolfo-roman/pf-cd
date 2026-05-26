@@ -36,7 +36,7 @@
       
       <!-- Desktop Buttons -->
       <div class="hidden md:flex items-center gap-4">
-        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-card border border-border hover:border-electric-blue transition-all duration-300">
+        <button onclick="toggleTheme()" aria-label="Cambiar tema" class="p-2 rounded-lg bg-card border border-border hover:border-electric-blue transition-all duration-300">
           <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
           </svg>
@@ -78,11 +78,11 @@
           </div>
         {% else %}
           <!-- Usuario no autenticado -->
-          <a href="{{ url_for('main.login') }}" class="px-6 py-2.5 rounded-lg gradient-bg text-white hover:shadow-lg transition-all duration-300 flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M12 4v16m8-8H4"/>
-            </svg>
-            Probar Demo
+          <a href="{{ url_for('main.login') }}" class="px-5 py-2.5 rounded-lg border border-border text-foreground/70 hover:text-foreground hover:border-electric-blue transition-all duration-300 text-sm">
+            Iniciar Sesión
+          </a>
+          <a href="{{ url_for('main.login', register='1') }}" class="px-5 py-2.5 rounded-lg gradient-bg text-white hover:shadow-lg transition-all duration-300 text-sm">
+            Registrarse
           </a>
         {% endif %}
       </div>
@@ -106,7 +106,8 @@
         {% if session.logged_in %}
           <a href="{{ url_for('main.analyzer') }}" class="flex-1 p-3 rounded-lg bg-card border border-border text-center">Analizador</a>
         {% else %}
-          <a href="{{ url_for('main.login') }}" class="flex-1 p-3 rounded-lg bg-card border border-border text-center">Demo</a>
+          <a href="{{ url_for('main.login') }}" class="flex-1 p-3 rounded-lg bg-card border border-border text-center text-sm">Iniciar Sesión</a>
+          <a href="{{ url_for('main.login', register='1') }}" class="flex-1 p-3 rounded-lg gradient-bg text-white text-center text-sm">Registrarse</a>
         {% endif %}
       </div>
       

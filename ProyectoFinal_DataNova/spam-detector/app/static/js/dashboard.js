@@ -14,4 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const chart = document.getElementById('weekly-chart');
   if (chart) observer.observe(chart);
+
+  // Set precision bar widths from data attributes
+  document.querySelectorAll('.precision-bar__fill[data-w]').forEach(el => {
+    el.style.setProperty('--w', el.dataset.w + 'px');
+  });
 });

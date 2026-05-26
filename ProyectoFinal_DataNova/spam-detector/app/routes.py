@@ -10,12 +10,25 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from functools import wraps
 
 from .predictor import predict_message
-from .database  import check_connection, get_inbox_messages, save_analysis, ensure_tables, seed_demo_messages
+from .database  import (check_connection, get_inbox_messages, save_analysis,
+                         ensure_tables, seed_demo_messages,
+                         create_user, get_user_by_email,
+                         get_user_stats, get_user_recent_analyses,
+                         get_user_weekly_activity, get_user_all_analyses)
 
 main = Blueprint('main', __name__)
 
-DATA_DIR = Path(__file__).resolve().parents[1] / 'data'
-FEEDBACK_FILE = DATA_DIR / 'feedback.csv'
+DATA_DIR          = Path(__file__).resolve().parents[1] / 'data'
+FEEDBACK_FILE     = DATA_DIR / 'feedback.csv'
+PENDING_OAUTH_FILE = DATA_DIR / 'pending_oauth_users.txt'
+
+
+def _log_pending_oauth_user(email: str, name: str) -> None:
+    """Registra el correo del nuevo usuario para añadirlo manualmente en Google Cloud."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
+    with open(PENDING_OAUTH_FILE, 'a', encoding='utf-8') as f:
+        f.write(f'{timestamp} | {email} | {name}\n')
 
 
 # ── Helpers métricas ──────────────────────────────────────────────────────
@@ -91,31 +104,73 @@ def index():
     """Alias para compatibilidad con enlaces antiguos."""
     return redirect(url_for('main.landing'))
 
-# NUEVA RUTA: Login (GET y POST)
+# NUEVA RUTA: Login / Registro (GET y POST)
 @main.route('/login', methods=['GET', 'POST'])
 def login():
-    """Página de login con autenticación simple"""
     if request.method == 'POST':
-        email = request.form.get('email', '').strip()
+        action   = request.form.get('action', 'login')   # 'login' | 'register'
+        email    = request.form.get('email', '').strip().lower()
         password = request.form.get('password', '').strip()
-        name = request.form.get('name', '').strip()
-        remember = request.form.get('remember') == 'on'
-        
-        # Autenticación simple (demo)
-        # En producción, esto debería usar una base de datos
-        if email and password:
-            session['logged_in'] = True
-            session['user_email'] = email
-            session['user_name'] = name if name else email.split('@')[0]
-            if remember:
-                session.permanent = True
-            
-            flash(f'¡Bienvenido {session["user_name"]}!', 'success')
-            return redirect(url_for('main.analyzer'))
-        else:
+        name     = request.form.get('name', '').strip()
+
+        if not email or not password:
             flash('Correo y contraseña son requeridos.', 'error')
-    
-    return render_template('auth/login.html')
+            return render_template('auth/login.html', show_register=(action == 'register'))
+
+        # ── Registro ──────────────────────────────────────────────────────
+        if action == 'register':
+            if len(password) < 6:
+                flash('La contraseña debe tener al menos 6 caracteres.', 'error')
+                return render_template('auth/login.html', show_register=True)
+            try:
+                from werkzeug.security import generate_password_hash
+                ensure_tables()
+                if get_user_by_email(email):
+                    flash('Ya existe una cuenta con ese correo.', 'error')
+                    return render_template('auth/login.html', show_register=True)
+
+                display_name = name if name else email.split('@')[0]
+                user_id = create_user(email, display_name, generate_password_hash(password))
+
+                # Registrar email para alta manual en Google Cloud OAuth
+                _log_pending_oauth_user(email, display_name)
+
+                session['logged_in'] = True
+                session['user_id']    = user_id
+                session['user_email'] = email
+                session['user_name']  = display_name
+                flash(f'¡Cuenta creada! Bienvenido/a, {display_name}.', 'success')
+                return redirect(url_for('main.analyzer'))
+            except Exception as e:
+                flash(f'Error al crear cuenta: {str(e)[:100]}', 'error')
+                return render_template('auth/login.html', show_register=True)
+
+        # ── Login ─────────────────────────────────────────────────────────
+        else:
+            try:
+                from werkzeug.security import check_password_hash
+                ensure_tables()
+                user = get_user_by_email(email)
+                if not user or not check_password_hash(user['password_hash'], password):
+                    flash('Correo o contraseña incorrectos.', 'error')
+                    return render_template('auth/login.html')
+                if not user.get('is_active'):
+                    flash('Cuenta desactivada. Contacta al administrador.', 'error')
+                    return render_template('auth/login.html')
+
+                if request.form.get('remember') == 'on':
+                    session.permanent = True
+                session['logged_in'] = True
+                session['user_id']    = user['id']
+                session['user_email'] = email
+                session['user_name']  = user.get('name') or email.split('@')[0]
+                flash(f'¡Bienvenido/a de nuevo, {session["user_name"]}!', 'success')
+                return redirect(url_for('main.analyzer'))
+            except Exception as e:
+                flash(f'Error al iniciar sesión: {str(e)[:100]}', 'error')
+
+    show_register = request.args.get('register') == '1'
+    return render_template('auth/login.html', show_register=show_register)
 
 # NUEVA RUTA: Logout
 @main.route('/logout')
@@ -135,8 +190,34 @@ def analyzer():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    metrics = _aggregate_metrics()
-    return render_template('dashboard.html', metrics=metrics)
+    metrics  = _aggregate_metrics()
+    user_id  = session.get('user_id')
+
+    stats           = {'total': 0, 'spam': 0, 'ham': 0, 'accuracy': 0.0}
+    recent_analyses = []
+    weekly_data     = []
+
+    if user_id:
+        try:
+            ensure_tables()
+            stats           = get_user_stats(user_id)
+            recent_analyses = get_user_recent_analyses(user_id, limit=5)
+            weekly_data     = get_user_weekly_activity(user_id)
+        except Exception:
+            pass
+
+    total   = stats['total']
+    spam    = stats['spam']
+    ham     = stats['ham']
+    ham_pct = round(ham / total * 100, 1) if total > 0 else 0.0
+
+    return render_template('dashboard.html',
+        metrics=metrics,
+        stats=stats,
+        ham_pct=ham_pct,
+        recent_analyses=recent_analyses,
+        weekly_data=weekly_data,
+    )
 
 # MODIFICAR inbox - REQUIERE LOGIN
 @main.route('/inbox')
@@ -149,6 +230,35 @@ def inbox():
 @login_required
 def history():
     return render_template('history.html')
+
+
+@main.route('/history/export')
+@login_required
+def history_export():
+    import csv
+    import io
+    from flask import Response
+    user_id = session.get('user_id')
+    rows = get_user_all_analyses(user_id)
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Fecha', 'Clasificación', 'Confianza (%)', 'Texto'])
+    for r in rows:
+        date_str = r['analyzed_at'].strftime('%Y-%m-%d %H:%M:%S') if r.get('analyzed_at') else ''
+        writer.writerow([
+            date_str,
+            'Spam' if r.get('is_spam') else 'No Spam',
+            round(float(r.get('confidence', 0)) * 100, 1) if r.get('confidence', 0) <= 1 else round(float(r.get('confidence', 0)), 1),
+            r.get('clean_text', '')
+        ])
+
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv; charset=utf-8',
+        headers={'Content-Disposition': 'attachment; filename="historial_datanova.csv"'}
+    )
 
 # MODIFICAR about - REQUIERE LOGIN
 @main.route('/about')
@@ -176,11 +286,38 @@ def api_predict():
 
     result = predict_message(text)
 
-    # Intentar guardar en BD si está configurada (silencioso si falla)
+    # Guardar en BD con user_id de la sesión activa
     inbox_id = data.get('inbox_id')
-    save_analysis(inbox_id, result)
+    user_id  = session.get('user_id')
+    save_analysis(inbox_id, result, user_id)
 
     return jsonify(result)
+
+
+# ── API: estado de la BD y el modelo ────────────────────────────────────
+@main.route('/api/status')
+def api_status():
+    db_ok = False
+    db_msg = ''
+    try:
+        check_connection()
+        db_ok = True
+    except Exception as e:
+        db_msg = str(e)[:120]
+
+    model_ok = False
+    model_msg = ''
+    try:
+        from .predictor import predict_message
+        model_ok = True
+    except Exception as e:
+        model_msg = str(e)[:200]
+
+    status = 200 if db_ok else 503
+    return jsonify({
+        'db':    'ok' if db_ok else f'error: {db_msg}',
+        'model': 'ok' if model_ok else f'error: {model_msg}',
+    }), status
 
 
 # ── API: retroalimentación ───────────────────────────────────────────────
@@ -298,7 +435,8 @@ def gmail_callback():
     try:
         from .gmail import exchange_code, get_redirect_uri
         redirect_uri = get_redirect_uri()
-        exchange_code(code, redirect_uri)
+        user_id = session.get('user_id')
+        exchange_code(code, redirect_uri, user_id)
         return redirect(url_for('main.inbox') + '?gmail_ok=1')
     except Exception as e:
         return redirect(url_for('main.inbox') + f'?gmail_error=1&msg={str(e)[:60]}')
@@ -308,7 +446,7 @@ def gmail_callback():
 def gmail_disconnect():
     try:
         from .gmail import disconnect
-        disconnect()
+        disconnect(session.get('user_id'))
     except Exception:
         pass
     return jsonify({'ok': True})
@@ -319,8 +457,9 @@ def gmail_disconnect():
 def api_gmail_status():
     try:
         from .gmail import is_connected, has_credentials
+        user_id = session.get('user_id')
         return jsonify({
-            'connected':       is_connected(),
+            'connected':       is_connected(user_id),
             'has_credentials': has_credentials(),
         })
     except ImportError:
@@ -333,7 +472,8 @@ def api_gmail_status():
 def api_gmail_messages():
     try:
         from .gmail import get_messages
-        messages = get_messages(max_results=25)
+        user_id  = session.get('user_id')
+        messages = get_messages(max_results=25, user_id=user_id)
         return jsonify({'source': 'gmail', 'messages': messages})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -358,4 +498,3 @@ def api_gmail_analyze():
     # Guardar sin inbox_id (mensaje Gmail, no en nuestra BD de inbox)
     save_analysis(None, result)
     return jsonify(result)
-

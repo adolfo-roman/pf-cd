@@ -13,7 +13,7 @@
   </div>
   <div
     class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full animate-pulse-slow z-10 pointer-events-none blur-2xl bg-purple/30 dark:blur-xl dark:bg-purple/70"
-    style="animation-delay: 1s"></div>
+    class="anim-delay-1s"></div>
 
   <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20 pb-16">
     <div class="space-y-8 animate-on-scroll">
@@ -36,14 +36,14 @@
       </h1>
 
       <p class="max-w-3xl mx-auto text-lg md:text-xl text-foreground/70 leading-relaxed">
-        DataNova ofrece consultoría de vanguardia en IA y Ciencia de Datos para acelerar tu transformación digital.
-        Desde machine learning hasta soluciones empresariales, convertimos datos complejos en insights accionables.
+        Plataforma de detección de spam y phishing con Inteligencia Artificial, desarrollada por DataNova para UNAM y Kyndryl.
+        Analiza correos en tiempo real y protege a los usuarios de fraudes y mensajes maliciosos.
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-        <a href="{{ url_for('main.login') }}"
+        <a href="{{ url_for('main.login', register='1') }}"
           class="group px-8 py-4 rounded-xl gradient-bg text-white hover:shadow-2xl transition-all duration-300 flex items-center gap-2 text-lg">
-          Detección de Estafas
+          Crear Cuenta Gratis
           <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
             viewBox="0 0 24 24">
             <path d="M5 12h14M12 5l7 7-7 7" />
@@ -51,7 +51,7 @@
         </a>
         <a href="{{ url_for('main.login') }}"
           class="px-8 py-4 rounded-xl bg-card border border-border hover:border-electric-blue hover:shadow-lg transition-all duration-300 flex items-center gap-2 text-lg">
-          Detección de Spam
+          Iniciar Sesión
         </a>
       </div>
 
